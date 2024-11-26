@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Meeting Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            background-color: #f4f4f9;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 14px;
+            white-space: pre-wrap; /* Preserve line breaks */
+        }
+    </style>
+</head>
+<body>
+    <form id="meetingForm">
+        <h2>Submit Meeting Details</h2>
+        <label for="meetingCode">Meeting Code</label>
+        <input type="text" id="meetingCode" name="meetingCode" placeholder="Enter Meeting Code" required>
+        
+        <label for="phoneNumber">Phone Number</label>
+        <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter 10-digit Phone Number" required>
+        
+        <button type="submit">Submit</button>
+        <div class="message" id="message"></div>
+    </form>
+
+    <script>
+        document.getElementById('meetingForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const meetingCodeInput = document.getElementById('meetingCode');
+            const phoneNumberInput = document.getElementById('phoneNumber');
+            const messageDiv = document.getElementById('message');
+
+            // Validate Meeting Code
+            let meetingCode = meetingCodeInput.value.trim().toUpperCase();
+            meetingCodeInput.value = meetingCode; // Update input with formatted value
+
+            // Validate Phone Number
+            let phoneNumber = phoneNumberInput.value.trim();
+            const phoneRegex = /^\d{10}$/;
+
+            if (!phoneRegex.test(phoneNumber)) {
+                messageDiv.textContent = 'Phone Number must be numeric and exactly 10 digits.';
+                messageDiv.style.color = 'red';
+                return;
+            }
+
+            // Construct API URL
+            const apiUrl = `https://mpowerpidilite.my.salesforce-sites.com/webhook/services/apexrest/webhook?from_number=${phoneNumber}&campaign_name=${meetingCode}`;
+
+            try {
+                // Make GET request
+                const response = await fetch(apiUrl);
+                const result = await response.json();
+
+                // Display API response
+                messageDiv.textContent = `API Response:\n${JSON.stringify(result, null, 2)}`;
+                messageDiv.style.color = 'green';
+            } catch (error) {
+                // Handle errors
+                messageDiv.textContent = `Error: ${error.message}`;
+                messageDiv.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>
