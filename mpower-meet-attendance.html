@@ -44,6 +44,10 @@
             margin-top: 20px;
             font-size: 14px;
             white-space: pre-wrap; /* Preserve line breaks */
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
         }
     </style>
 </head>
@@ -88,13 +92,16 @@
             try {
                 // Make GET request
                 const response = await fetch(apiUrl);
-                const result = await response.json();
 
-                // Display API response
-                messageDiv.textContent = `API Response:\n${JSON.stringify(result, null, 2)}`;
-                messageDiv.style.color = 'green';
+                // Extract raw response
+                const rawResponse = await response.text();
+
+                // Display raw response
+                messageDiv.textContent = `Raw API Response:\n${rawResponse}`;
+                messageDiv.style.color = 'black';
+                messageDiv.style.border = '1px solid #4CAF50';
             } catch (error) {
-                // Handle errors
+                // Display error
                 messageDiv.textContent = `Error: ${error.message}`;
                 messageDiv.style.color = 'red';
             }
